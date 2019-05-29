@@ -1,0 +1,111 @@
+
+TS_Algorithm <- function(taxon, m, method = "balanced", strict = "no", requireIDs = NULL) {
+  # An algorithm that receives a group of Taxonomy IDs and the size m of the
+  # sample to obtain from them. Returns a vector with a maximized taxonomy 
+  # diversity. Assumes that every input id is unique.
+  #
+  # Args:
+  #   taxon: (char/integer) Taxon from which to start sampling children taxa.
+  #   m: (integer) size of the sample to generate.
+  #   method: (char) whether the algorithm will choose IDs randomly or 
+  #                  maintaining a balanced allocation (m_i differing by no
+  #                  more than 1 if the maximum possible value wasn't reached).
+  #   strict: (char) whether it favors balanced taxa representation 
+  #                  (strict = "yes") or maximized taxa representation ("no").
+  #   requireIDs: (char) IDs that must appear in the output.
+  # Returns:
+  #   outputIDs: (vector) vector of IDs with maximized taxonomy diversity.
+
+
+find the children (sub-taxa nodes) of the current taxon
+
+
+# Condition to end recursion
+
+if current taxon has no children   
+  return taxon
+
+
+# For cases when one taxon isn't a leaf node, but is an input ID that should
+# be available to sample along its children.
+# Example of this case is an input with Homo sapiens (9606), 
+# H. sapiens neanderthalensis (63221) and H. sapiens ssp. denisova (741158).
+
+check how many offspring each child has
+check how many offspring the current taxon has
+if the sum of children offspring < number of current taxon's offspring
+  add current taxon as a child of itself
+  
+  
+# Allocating m_i to the children taxa at last.
+# Relaxed mode:
+# Balanced: allocate ensuring that any two taxa differ by at most 1 if
+#           m_i < n_i (or m_i < childrenCount), but allow more if one taxon
+#           has m_i == n_i.
+# Randomized: if we don't have the m fully distributed over m_i (children),
+#             choose a random child from childrenCount that still has taxa
+#             available to choose.
+# Strict mode:
+# Balanced: ensure two taxa allocation (m_i) differ at most by 1.
+# Randomized: fully random child sampling, uniform distribution among taxa.
+
+initiate m_i for every children as 0
+
+if (method == "balanced" & strict == "no")
+  while (m > 0) and (m >= number of children whose n_i > m_i)
+    add 1 to each m_i[children] whose (n_i > m_i)
+    subtract from m the amount added to m_i[children]
+  add remaining m randomly (uniform distribution) over the remaining children whose n_i > m_i
+  
+else if (method == "balanced" & strict == "yes")
+  while (m > 0) and (m >= number of children)
+    add 1 to each m_i[children]
+    subtract from m the amount added to m_i[children]
+  add remaining m randomly (uniform distribution) over the remaining children
+
+else if (method == "randomized" & strict == "no") 
+  while (m > 0) and (at least 1 child whose n_i > m_i)
+    sample (uniformly) a child whose n_i > m_i
+    add 1 to that child's m_i
+    subtract 1 from m
+  
+else if (method == "randomized" & strict == "yes")
+  while (m > 0)
+    sample (uniformly) a child
+    add 1 to that child's m_i
+    subtract 1 from m
+  
+  
+# Require specific IDs (and their parents/ancestors) to be present.
+# If any required ID has a lower m_i allocated than needed (informed by
+# requireIDs), reallocate from another ID in m_i.
+
+if the user requires any ID (requireID input, also informs the minimum m_i for each ID)
+  check which of the required m_i are below the minimum required by requireID
+
+  if (method == "balanced")
+    while any required m_i is below the minimum required by requireID
+      subtract 1 from the highest non-required m_i (in case of ties, sample one of the tied m_i)
+      add 1 to a required m_i below the minimum required by requireID
+  else if (method == "randomized")
+    while any required m_i is below the minimum required by requireID
+      subtract 1 from a random non-required m_i > 0
+      add 1 to a required m_i below the minimum required by requireID   
+
+
+# Recursive step
+initialize empty vector outputIDs
+for each child of current taxon
+  if m_i[child] == 0
+    next
+  else if child == current taxon
+    outputIDs <- c(outputIDs, taxon)
+  else
+    outputIDs <- c(outputIDs, TS_Algorithm(child))
+  
+
+return(outputIDs)
+
+}
+
+

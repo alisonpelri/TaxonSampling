@@ -1,0 +1,236 @@
+\documentclass{bioinfo}
+\copyrightyear{2015} \pubyear{2015}
+
+\access{Advance Access Publication Date: Day Month Year}
+\appnotes{Manuscript Category}
+
+\begin{document}
+\[\firstpage{1}
+
+\subtitle{Subject Section}
+
+\title[short Title]{This is a title}
+\author[Sample \textit{et~al}.]{Corresponding Author\,$^{\text{\sfb 1,}*}$, Co-Author\,$^{\text{\sfb 2}}$ and Co-Author\,$^{\text{\sfb 2,}*}$}
+\address{$^{\text{\sf 1}}$Department, Institution, City, Post Code, Country and \\
+$^{\text{\sf 2}}$Department, Institution, City, Post Code,
+Country.}
+
+\corresp{$^\ast$To whom correspondence should be addressed.}
+
+\history{Received on XXXXX; revised on XXXXX; accepted on XXXXX}
+
+\editor{Associate Editor: XXXXXXX}
+
+\abstract{\textbf{Motivation:} Text Text Text Text Text Text Text Text Text Text Text Text Text
+Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text
+Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text
+Text Text Text Text Text Text
+Text Text Text Text Text.\\
+\textbf{Results:} Text  Text Text Text Text Text Text Text Text Text  Text Text Text Text Text
+Text Text Text Text Text Text Text Text Text Text Text Text Text  Text Text Text Text Text Text\\
+\textbf{Availability:} Text  Text Text Text Text Text Text Text Text Text  Text Text Text Text
+Text Text Text Text Text Text Text Text Text Text Text Text Text Text  Text\\
+\textbf{Contact:} \href{name@bio.com}{name@bio.com}\\
+\textbf{Supplementary information:} Supplementary data are available at \textit{Bioinformatics}
+online.}
+
+\maketitle
+
+\section{Introduction}
+
+% sketch
+
+% The biological question (maximizing taxonomic diversity) and previous approach (AST). Just description and citation.
+A common procedure in evolutionary studies is the selection of representative sequences. Because the genome databases are commonly populated with species of interest for medical and economic research, one has to account for a taxonomic bias in the sample selection.
+
+Genomic databases are heavily biased towards towards a few extensively studied taxa.
+
+
+- Gains from the extended approach (breaking assumptions and filtering taxa, implications).
+
+  - use for low number of sequences/inputs
+  
+  - stochastic procedure that still maximizes diversity
+  
+  - allows for mixed taxonomic levels being used as input (important for NCBI taxonomy)
+  
+  - impact over bias (?)
+
+
+% end sketch
+
+
+%\enlargethispage{12pt}
+
+\section{Approach}
+
+
+% sketch
+
+% defining balance and diversity
+A sample is balanced if any two taxa with a common parent taxon receive the same number of observations in a sample, and diversified if it maximizes the number of taxa observed in each taxonomic level of a sample.
+
+% common case
+A random uniform sampling, in which each input sequence has the same probability of being sampled as any other sequence, is susceptible to any bias in the input. This can result in samples that aren't neither balanced nor diversified. This event happens when a few taxa have disproportionally more sequences than the others. The probability of obtaining any other taxon diminishes in a random uniform sampling, and may not appear at all in most cases. 
+
+% original algorithm
+The original algorithm is a recursive attribution of m observations from n inputs. 
+
+Given a non-leaf taxon node, the goal is to attribute a number of observations ($m_i$) for each of its children nodes (or sub-taxa) with at least one sequence, such that sum($m_i$) = $m$. The algorithm is then recursively applied for each child node, in which the attributed $m_i$ is passed as the child's $m$.
+
+The method by which we attribute $m_i$ to each individual node $i$ determines how balanced or diversified the output will be. 
+
+The original algorithm attributes the mean for each node $i$, varying at most by 1 for when the mean isn't an integer, and achieves a balanced sample in terms of taxonomic representation. In other words, a given taxon won't have more sub-taxa sampled than another taxon in the same taxonomic level. With that, the algorithm limits bias from overrepresented or underrepresented taxa in the input, which can cause many taxa to have no samples, or a few ones being consistently sampled. This relies on the assumption that $n_i >= mean$ for every $i$, and requires repeating sequences to work if it is violated.
+
+By changing the method to realocate excess attributions of $m_i$ (when $n_i < mean(m_i)$) among other taxa, the algorithm can maximize diversity, as the likelihood  
+
+
+
+- assumption of $n_i >= m_i$
+- balance vs diversity
+- randomized approach
+- cases when a taxon isn't a leaf node
+- filtering: requiring certain taxa (and their offspring) to be present or absent
+- $n_i$ as sequences vs $n_i$ as taxa (multiple sequences vs one sequence per taxon)
+
+
+% obtaining $n_i$
+The algorithm requires previous knowledge of how many instances of each taxon exist in the input, where an instance is when a given input taxonomy ID is that taxon, or has it as an ancestor. This is obtained by searching the ancestor IDs of each input ID and keeping a table with the numeber occurences of each taxon, both input and ancestor.
+
+
+% end sketch
+
+
+\begin{methods}
+\section{Methods}
+
+
+\begin{itemize}
+\item for bulleted list, use itemize
+\item for bulleted list, use itemize
+\item for bulleted list, use itemize\vspace*{1pt}
+\end{itemize}
+
+
+\subsection{This is subheading}
+
+
+\subsubsection{This is subsubheading}
+
+
+%\begin{table}[!t]
+%\processtable{This is table caption\label{Tab:01}} {\begin{tabular}{@{}llll@{}}\toprule head1 &
+%head2 & head3 & head4\\\midrule
+%row1 & row1 & row1 & row1\\
+%row2 & row2 & row2 & row2\\
+%row3 & row3 & row3 & row3\\
+%row4 & row4 & row4 & row4\\\botrule
+%\end{tabular}}{This is a footnote}
+%\end{table}
+
+\end{methods}
+
+\begin{figure}[!tpb]%figure1
+\fboxsep=0pt\colorbox{gray}{\begin{minipage}[t]{235pt} \vbox to 100pt{\vfill\hbox to
+235pt{\hfill\fontsize{24pt}{24pt}\selectfont FPO\hfill}\vfill}
+\end{minipage}}
+%\centerline{\includegraphics{fig01.eps}}
+\caption{Caption, caption.}\label{fig:01}
+\end{figure}
+
+%\begin{figure}[!tpb]%figure2
+%%\centerline{\includegraphics{fig02.eps}}
+%\caption{Caption, caption.}\label{fig:02}
+%\end{figure}
+
+
+
+\subsection{Test1}
+
+
+
+
+
+
+
+\section{Discussion}
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%     please remove the " % " symbol from \centerline{\includegraphics{fig01.eps}}
+%     as it may ignore the figures.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+
+
+\section{Conclusion}
+
+
+%\begin{enumerate}
+%\item this is item, use enumerate
+%\item this is item, use enumerate
+%\item this is item, use enumerate
+%\end{enumerate}
+
+
+
+\section*{Acknowledgements}
+
+
+\section*{Funding}
+
+
+%\bibliographystyle{natbib}
+%\bibliographystyle{achemnat}
+%\bibliographystyle{plainnat}
+%\bibliographystyle{abbrv}
+%\bibliographystyle{bioinformatics}
+%
+%\bibliographystyle{plain}
+%
+%\bibliography{Document}
+
+
+\begin{thebibliography}{}
+
+\bibitem[Bofelli {\it et~al}., 2000]{Boffelli03}
+Bofelli,F., Name2, Name3 (2003) Article title, {\it Journal Name}, {\bf 199}, 133-154.
+
+\bibitem[Bag {\it et~al}., 2001]{Bag01}
+Bag,M., Name2, Name3 (2001) Article title, {\it Journal Name}, {\bf 99}, 33-54.
+
+\bibitem[Yoo \textit{et~al}., 2003]{Yoo03}
+Yoo,M.S. \textit{et~al}. (2003) Oxidative stress regulated genes
+in nigral dopaminergic neurnol cell: correlation with the known
+pathology in Parkinson's disease. \textit{Brain Res. Mol. Brain
+Res.}, \textbf{110}(Suppl. 1), 76--84.
+
+\bibitem[Lehmann, 1986]{Leh86}
+Lehmann,E.L. (1986) Chapter title. \textit{Book Title}. Vol.~1, 2nd edn. Springer-Verlag, New York.
+
+\bibitem[Crenshaw and Jones, 2003]{Cre03}
+Crenshaw, B.,III, and Jones, W.B.,Jr (2003) The future of clinical
+cancer management: one tumor, one chip. \textit{Bioinformatics},
+doi:10.1093/bioinformatics/btn000.
+
+\bibitem[Auhtor \textit{et~al}. (2000)]{Aut00}
+Auhtor,A.B. \textit{et~al}. (2000) Chapter title. In Smith, A.C.
+(ed.), \textit{Book Title}, 2nd edn. Publisher, Location, Vol. 1, pp.
+???--???.
+
+\bibitem[Bardet, 1920]{Bar20}
+Bardet, G. (1920) Sur un syndrome d'obesite infantile avec
+polydactylie et retinite pigmentaire (contribution a l'etude des
+formes cliniques de l'obesite hypophysaire). PhD Thesis, name of
+institution, Paris, France.
+
+\end{thebibliography}
+\]
+\end{document}
