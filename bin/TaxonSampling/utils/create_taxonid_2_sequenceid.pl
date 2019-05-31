@@ -24,6 +24,7 @@ while (my $line = <IN>) {
   $line =~ s/^Query://;
   chomp $line;
   my @aux = split(/\t/, $line);
+  next if ($#aux < 1);
   $taxonID2speciesName{$aux[1]} = $aux[0];
 }
 
